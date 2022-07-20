@@ -1,0 +1,134 @@
+
+// 舞台类
+class Stage {
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D;
+    target: any;
+    clickX: number;
+    clickY: number;
+    targetDx: number;
+    targetDy: number;
+    isDrag: boolean;
+    children: any[];
+    constructor(canvas, w, h) {
+        // 初始化canvas
+        this.canvas = typeof canvas == "string" ? document.getElementById(canvas) : canvas;
+        this.canvas.width = w;
+        this.canvas.height = h;
+        this.ctx = this.canvas.getContext("2d");
+
+        this.children = [];
+
+        // 当前点击选中的元素
+        this.target = null;
+
+        // 点击位置相对canvas的xy偏移量
+        this.clickX = null;
+        this.clickY = null;
+
+        // 点击位置相对元素的起始位置，比如矩形的左上顶点，圆形的圆心
+        this.targetDx = 0;
+        this.targetDy = 0;
+
+        // 增加拖拽状态判断，mousemove了才是拖拽，否则只是点击
+        this.isDrag = false;
+
+        this.initEvent();
+    }
+
+    initEvent() {
+        // 先添加down监听，达成条件后再添加move监听
+        this.canvas.addEventListener("mousedown", this.mouseDown);
+        document.addEventListener("mouseup", () => {
+            this.canvas.style.cursor = "";
+            if (this.isDrag) {
+                this.clearChildrenActive();
+                this.isDrag = false;
+                // this.target = null
+            } else if (this.target) {
+                this.target.dispatchEvent && this.target.dispatchEvent("click");
+            }
+            this.canvas.removeEventListener("mousemove", this.targetMove, false);
+        });
+    }
+
+    // mouseDown作为事件函数，this指向要处理
+    mouseDown = (e) => {
+        // 缓存target的位置
+        this.clickX = e.offsetX;
+        this.clickY = e.offsetY;
+        // 根据点击的点，找到在框内的元素（最大zindex，有可能重叠的）
+        // 先假设只有rect
+        // 把children和children的children拍平，然后判断元素的位置
+        function flatArray(array) {
+            let res = [];
+            function h(arr) {
+                arr.forEach((item) => {
+                    res.push(item);
+                    item.children && h(item.children);
+                });
+            }
+            h(array);
+            return res;
+        }
+        let elements = flatArray(this.children);
+        // 先找到点击的元素（多个）
+        let clickElements = elements.filter((item) => {
+            return item.pointInElement && item.pointInElement(e.offsetX, e.offsetY);
+        });
+        // 再找到zindex最大的那个
+        let target = clickElements.find((item) => item.zindex == Math.max(...clickElements.map((item) => item.zindex)));
+        this.clearChildrenActive();
+        if (target) {
+            // **知道点击了那个taget，应该把target的点击事件处理暴露出去，而不是都丢在这里**
+            this.target = target;
+            this.target.active = true;
+            // 还要处理鼠标点下的位置与target左上角的位置
+            this.targetDx = this.clickX - target.x;
+            this.targetDy = this.clickY - target.y;
+            this.canvas.style.cursor = "all-scroll";
+            this.canvas.addEventListener("mousemove", this.targetMove, false);
+        }
+    };
+    clearChildrenActive() {
+        // 清除所有元素的选中状态
+        this.children.forEach((item) => item.setActive(false));
+    }
+    targetMove = (e) => {
+        this.isDrag = true;
+        let moveX = e.offsetX - this.clickX;
+        let moveY = e.offsetY - this.clickY;
+        this.target.type == "container"
+            ? this.target.updatePosition(this.clickX + moveX - this.targetDx, this.clickY + moveY - this.targetDy)
+            : this.target.parent.updatePosition(
+                  this.clickX + moveX - this.targetDx - this.target.offsetX,
+                  this.clickY + moveY - this.targetDy - this.target.offsetY
+              );
+    };
+
+    add(child) {
+        this.children.push(child);
+        child.parent = this;
+        this.render();
+    }
+    remove(child) {
+        this.children.splice(
+            this.children.findIndex((item) => item.id == child.id),
+            1
+        );
+    }
+    clear() {
+        this.ctx.clearRect(0, 0, this.canvas.width + 1, this.canvas.height + 1);
+    }
+    render() {
+        requestAnimationFrame(Stage.prototype.render.bind(this));
+        this.clear();
+        this.children.sort((a, b) => {
+            return a.zindex - b.zindex;
+        });
+        // 渲染子元素的时候，根据zindex来进行先后渲染
+        this.children.forEach((item) => item.draw(this.ctx));
+    }
+}
+
+export default Stage
