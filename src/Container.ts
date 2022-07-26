@@ -40,6 +40,7 @@ class Container {
     }
     draw(ctx) {
         ctx.beginPath();
+        ctx.lineWidth = 1;
         ctx.strokeStyle = this.c;
         ctx.strokeRect(this.x, this.y, this.w, this.h);
         // 绘制背景色

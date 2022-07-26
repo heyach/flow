@@ -1,3 +1,4 @@
+import flatArrayChildren from "./flatArrayChildren";
 
 // 舞台类
 class Stage {
@@ -10,6 +11,8 @@ class Stage {
     targetDy: number;
     isDrag: boolean;
     children: any[];
+    static DragElement: string[];
+    flatElements: any[];
     constructor(canvas, w, h) {
         // 初始化canvas
         this.canvas = typeof canvas == "string" ? document.getElementById(canvas) : canvas;
@@ -18,6 +21,7 @@ class Stage {
         this.ctx = this.canvas.getContext("2d");
 
         this.children = [];
+        this.flatElements = []
 
         // 当前点击选中的元素
         this.target = null;
@@ -33,6 +37,9 @@ class Stage {
         // 增加拖拽状态判断，mousemove了才是拖拽，否则只是点击
         this.isDrag = false;
 
+        // 直接可以拖拽的元素，还有一些是要放入container
+        Stage.DragElement = ["container", "dragpoint"]
+
         this.initEvent();
     }
 
@@ -45,40 +52,31 @@ class Stage {
                 this.clearChildrenActive();
                 this.isDrag = false;
                 // this.target = null
-            } else if (this.target) {
-                this.target.dispatchEvent && this.target.dispatchEvent("click");
-            }
+            } 
+            this.target && this.target.dispatchEvent && this.target.dispatchEvent("mouseup");
+            this.target = null
             this.canvas.removeEventListener("mousemove", this.targetMove, false);
         });
     }
 
     // mouseDown作为事件函数，this指向要处理
     mouseDown = (e) => {
+        let that = this
         // 缓存target的位置
         this.clickX = e.offsetX;
         this.clickY = e.offsetY;
         // 根据点击的点，找到在框内的元素（最大zindex，有可能重叠的）
         // 先假设只有rect
         // 把children和children的children拍平，然后判断元素的位置
-        function flatArray(array) {
-            let res = [];
-            function h(arr) {
-                arr.forEach((item) => {
-                    res.push(item);
-                    item.children && h(item.children);
-                });
-            }
-            h(array);
-            return res;
-        }
-        let elements = flatArray(this.children);
+        this.flatElements = flatArrayChildren(this.children);
         // 先找到点击的元素（多个）
-        let clickElements = elements.filter((item) => {
-            return item.pointInElement && item.pointInElement(e.offsetX, e.offsetY);
+        let clickElements = this.flatElements.filter((item) => {
+            return item.pointInElement && item.pointInElement(e.offsetX, e.offsetY, that.ctx);
         });
         // 再找到zindex最大的那个
         let target = clickElements.find((item) => item.zindex == Math.max(...clickElements.map((item) => item.zindex)));
         this.clearChildrenActive();
+        // console.log(target)
         if (target) {
             // **知道点击了那个taget，应该把target的点击事件处理暴露出去，而不是都丢在这里**
             this.target = target;
@@ -87,20 +85,25 @@ class Stage {
             this.targetDx = this.clickX - target.x;
             this.targetDy = this.clickY - target.y;
             this.canvas.style.cursor = "all-scroll";
+            this.target.dispatchEvent && this.target.dispatchEvent("click");
             this.canvas.addEventListener("mousemove", this.targetMove, false);
-        }
+        } 
     };
     clearChildrenActive() {
         // 清除所有元素的选中状态
         this.children.forEach((item) => item.setActive(false));
     }
     targetMove = (e) => {
-        this.isDrag = true;
         let moveX = e.offsetX - this.clickX;
         let moveY = e.offsetY - this.clickY;
-        this.target.type == "container"
-            ? this.target.updatePosition(this.clickX + moveX - this.targetDx, this.clickY + moveY - this.targetDy)
-            : this.target.parent.updatePosition(
+        if(Math.abs(moveX) > 5 || Math.abs(moveY) > 5) {
+            this.isDrag = true;
+        } 
+        this.target.dispatchEvent && this.target.dispatchEvent("move");
+        // 本身可以拖拽的元素
+        Stage.DragElement.indexOf(this.target.type) != -1
+            ? this.target.updatePosition && this.target.updatePosition(this.clickX + moveX - this.targetDx, this.clickY + moveY - this.targetDy)
+            : this.target.parent.updatePosition && this.target.parent.updatePosition(
                   this.clickX + moveX - this.targetDx - this.target.offsetX,
                   this.clickY + moveY - this.targetDy - this.target.offsetY
               );

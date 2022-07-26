@@ -30,7 +30,7 @@ const webpackConfig = {
         ],
     },
     devServer: {
-        port: 8888,
+        port: 7777,
         contentBase: path.join(__dirname, "./src"),
     },
     plugins: [

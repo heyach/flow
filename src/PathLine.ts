@@ -18,6 +18,7 @@ class PathLine extends BasicElement {
     }
     draw(ctx) {
         ctx.beginPath();
+        ctx.lineWidth = 1;
         let path = getElementPathLinePoints(this.startPoint, this.endPoint);
         let sp = path[0];
         let ep = path[path.length - 1];
