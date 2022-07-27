@@ -15,6 +15,10 @@ class Container {
     y: number;
     w: number;
     h: number;
+    topPoint: { x: number; y: number; w: number; h: number; };
+    rightPoint: { x: number; y: number; w: number; h: number; };
+    bottomPoint: { x: number; y: number; w: number; h: number; };
+    leftPoint: { x: number; y: number; w: number; h: number; };
     constructor(x = 0, y = 0, w = 0, h = 0, c, zindex?) {
         this.x = x;
         this.y = y;
@@ -27,6 +31,31 @@ class Container {
         this.children = [];
         this.type = "container";
         this.parent = null;
+
+        this.topPoint = {
+            x: this.x + this.w / 2,
+            y: this.y,
+            w: this.w,
+            h: this.h
+        }
+        this.rightPoint = {
+            x: this.x + this.w,
+            y: this.y + this.h / 2,
+            w: this.w,
+            h: this.h
+        }
+        this.bottomPoint = {
+            x: this.x + this.w / 2,
+            y: this.y + this.h,
+            w: this.w,
+            h: this.h
+        }
+        this.leftPoint = {
+            x: this.x,
+            y: this.y + this.h / 2,
+            w: this.w,
+            h: this.h
+        }
     }
     add(child) {
         child.parent = this;
@@ -64,6 +93,19 @@ class Container {
     updatePosition(x, y) {
         this.x = x;
         this.y = y;
+        
+        // 不能整个的改topPoint，那样会重写对象地址
+        this.topPoint.x = this.x + this.w / 2;
+        this.topPoint.y = this.y
+
+        this.rightPoint.x = this.x + this.w
+        this.rightPoint.y = this.y + this.h / 2
+
+        this.bottomPoint.x = this.x + this.w / 2
+        this.bottomPoint.y = this.y + this.h
+        
+        this.leftPoint.x = this.x
+        this.leftPoint.y = this.y + this.h / 2
     }
     // 点是否在矩形内
     pointInElement(x, y) {

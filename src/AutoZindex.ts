@@ -3,8 +3,12 @@ let AutoZindex = (function() {
     class Singleton {
         zindex: number
         static instance: Singleton
+        nindex: number
+        hindex: number
         constructor() {
-            this.zindex = 0
+            this.zindex = 1000
+            this.nindex = 1000
+            this.hindex = 10000
             if(Singleton.instance) {
                 return Singleton.instance
             }
@@ -12,6 +16,12 @@ let AutoZindex = (function() {
         }
         getIndex() {
             return ++this.zindex
+        }
+        getNindex() {
+            return --this.nindex
+        }
+        getHindex() {
+            return ++this.hindex
         }
     }
     var sin = new Singleton()

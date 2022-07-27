@@ -20,12 +20,12 @@ function getElementPathLinePoints(elm1, elm2) {
     let dir = getDirection(elm1, elm2);
     switch (dir) {
         case "rightdown":
-            // 返回组件1下边的中心点，组件2上边的中心点，以及转折点
+            // 返回组件1右边的中心点，组件2左边的中心点，以及转折点
             return [
-                { x: elm1.x + elm1.w / 2, y: elm1.y + elm1.h },
-                { x: elm1.x + elm1.w / 2, y: elm1.y + (elm2.y - elm1.y) / 2 },
-                { x: elm2.x + elm2.w / 2, y: elm1.y + (elm2.y - elm1.y) / 2 },
-                { x: elm2.x + elm2.w / 2, y: elm2.y },
+                { x: elm1.x + elm1.w, y: elm1.y + elm1.h / 2 },
+                { x: elm1.x + elm1.w + (elm2.x - (elm1.x + elm1.w)) / 2, y: elm1.y + elm1.h / 2 },
+                { x: elm1.x + elm1.w + (elm2.x - (elm1.x + elm1.w)) / 2, y: elm2.y + elm2.h / 2 },
+                { x: elm2.x, y: elm2.y + elm2.h / 2 },
             ];
         case "right":
             // 返回组件2左边中心点和组件1右边中心点
@@ -34,12 +34,12 @@ function getElementPathLinePoints(elm1, elm2) {
                 { x: elm2.x, y: elm2.y + elm2.h / 2 },
             ];
         case "rightup":
-            // 返回组件1上边中心点，和组件2下边中心点以及转折点
+            // 返回组件1右边中心点，和组件2左边中心点以及转折点
             return [
-                { x: elm1.x + elm1.w / 2, y: elm1.y },
-                { x: elm1.x + elm1.w / 2, y: elm1.y + (elm2.y - elm1.y) / 2 },
-                { x: elm2.x + elm2.w / 2, y: elm1.y + (elm2.y - elm1.y) / 2 },
-                { x: elm2.x + elm2.w / 2, y: elm2.y + elm2.h },
+                { x: elm1.x + elm1.w, y: elm1.y + elm1.h / 2 },
+                { x: elm1.x + elm1.w + (elm2.x - (elm1.x + elm1.w)) / 2, y: elm1.y + elm1.h / 2 },
+                { x: elm1.x + elm1.w + (elm2.x - (elm1.x + elm1.w)) / 2, y: elm2.y + elm2.h / 2 },
+                { x: elm2.x, y: elm2.y + elm2.h / 2 },
             ];
         case "leftdown":
             // 组件2上边中心点和组件1下边中心点，以及转折点

@@ -1,10 +1,13 @@
 // 连线 
 // 一条线段，两个拖拽点，一个箭头，点击选中之后才出现拖拽箭头
+// 线的层级最低，拖拽点的层级最高
 
 import AutoZindex from "./AutoZindex"
 import DragPoint from "./DragPoint"
 import flatArrayChildren from "./flatArrayChildren"
 import getArrowControlPoint from "./getArrowControlPoint"
+import getElementPathLinePoints from "./getElementPathLinePoints"
+import pointNearEdge from "./pointNearEdge"
 
 
 class Connect {
@@ -24,10 +27,10 @@ class Connect {
         this.color = "blue"
         this.type = "connect"
         this.active = false
-        this.zindex = AutoZindex.getIndex()
+        this.zindex = AutoZindex.getNindex()
         this.children = []
         
-        this.startPoint = new DragPoint(startPoint.x, startPoint.y, 5, "green", AutoZindex.getIndex())
+        this.startPoint = new DragPoint(startPoint.x, startPoint.y, 5, "green", AutoZindex.getHindex())
         this.startPoint.addEvent("click", (t) => {
             this.startBindTarget = null
         })
@@ -40,8 +43,8 @@ class Connect {
             // 拖拽结束后，判断落点是否有元素，如果有，以元素的xy为准，同时记录元素，元素在更新位置的时候，也会更新线段
             let target = this.getMouseUpTarget(t.x, t.y)
             if(target) {
-                // 箭头落点坐标计算方式要优化，不能直接用元素的顶点，要判断边
-                this.startBindTarget = target
+                // 箭头落点坐标计算方式要优化，不能直接用元素的顶点，要判断边，更接近哪条边就用哪条边
+                this.startBindTarget = target[pointNearEdge(t, target)]
             }
         })
         this.endPoint = new DragPoint(endPoint.x, endPoint.y, 5, "green", AutoZindex.getIndex())
@@ -53,9 +56,10 @@ class Connect {
         });
         this.endPoint.addEvent("mouseup", (t) => {
             // 拖拽结束后，判断落点是否有元素，如果有，以元素的xy为准，同时记录元素，元素在更新位置的时候，也会更新线段
+            // 更新，以最合适的一条边为连线点
             let target = this.getMouseUpTarget(t.x, t.y)
             if(target) {
-                this.endBindTarget = target
+                this.endBindTarget = target[pointNearEdge(t, target)]
             }
         })
         
@@ -89,15 +93,25 @@ class Connect {
         ctx.beginPath();
         ctx.lineWidth = 3
         ctx.strokeStyle = this.color;
-        var arrowPoints = getArrowControlPoint(this.startPoint, this.endPoint)
-        ctx.moveTo(this.startPoint.x, this.startPoint.y);
-        ctx.lineTo(this.endPoint.x, this.endPoint.y);
+        // 绘制连线，箭头用倒数第二个点和最后一个点来确定
+        let path = getElementPathLinePoints(Object.assign(this.startPoint, {w: 0, h: 0}), Object.assign(this.endPoint, {w: 0, h: 0}));
+        let sp = path[0];
+        let ep = path[path.length - 1];
+        let secToLast = path.length > 2 ? path[path.length - 2] : sp
+        let pathPoints = path.slice(1, path.length - 1);
+
+        var arrowPoints = getArrowControlPoint(secToLast, ep)
+        ctx.moveTo(sp.x, sp.y);
+        pathPoints.forEach((item) => {
+            ctx.lineTo(item.x, item.y);
+        });
+        ctx.lineTo(ep.x, ep.y);
 
         ctx.moveTo(arrowPoints.m.x, arrowPoints.m.y);
-        ctx.lineTo(this.endPoint.x, this.endPoint.y);
+        ctx.lineTo(ep.x, ep.y);
 
         ctx.moveTo(arrowPoints.n.x, arrowPoints.n.y);
-        ctx.lineTo(this.endPoint.x, this.endPoint.y);
+        ctx.lineTo(ep.x, ep.y);
         ctx.stroke();
         ctx.closePath();
 

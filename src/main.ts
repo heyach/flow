@@ -20,13 +20,13 @@ s2.add(t2);
 // s2.add(p);
 
 // 在(10, 20)和(50， 20)的位置初始化一个连线箭头**这个连线方式要优化**，自行将箭头两端拖拽到需要连接的元素上，之后元素移动会自动更新连线
-let connect = new Connect({x: 10, y: 10}, {x: 150, y: 150})
+let connect = new Connect({x: 10, y: 150}, {x: 150, y: 150})
 s2.add(connect)
 
-let connect2 = new Connect({x: 10, y: 250}, {x: 150, y: 350})
+let connect2 = new Connect({x: 10, y: 250}, {x: 150, y: 250})
 s2.add(connect2)
 
-let connect3 = new Connect({x: 10, y: 350}, {x: 150, y: 550})
+let connect3 = new Connect({x: 10, y: 350}, {x: 150, y: 350})
 s2.add(connect3)
 
 
