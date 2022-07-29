@@ -13,13 +13,13 @@ class BasicElement {
     active: boolean;
     event: {};
     parent: Container;
-    constructor(offsetX?, offsetY?, zindex?) {
+    constructor(option: any) {
         this.x = 0;
         this.y = 0;
-        this.offsetX = offsetX;
-        this.offsetY = offsetY;
+        this.offsetX = option.offsetX;
+        this.offsetY = option.offsetY;
         this.id = guid();
-        this.zindex = zindex ? zindex : AutoZindex.getIndex();
+        this.zindex = option.zindex ? option.zindex : AutoZindex.getIndex();
         this.active = false;
         this.event = {};
         this.parent = null;

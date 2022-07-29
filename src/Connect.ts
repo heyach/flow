@@ -30,7 +30,12 @@ class Connect {
         this.zindex = AutoZindex.getNindex()
         this.children = []
         
-        this.startPoint = new DragPoint(startPoint.x, startPoint.y, 5, "green", AutoZindex.getHindex())
+        this.startPoint = new DragPoint({
+            x: startPoint.x,
+            y: startPoint.y,
+            r: 5,
+            color: "green"
+        })
         this.startPoint.addEvent("click", (t) => {
             this.startBindTarget = null
         })
@@ -47,7 +52,12 @@ class Connect {
                 this.startBindTarget = target[pointNearEdge(t, target)]
             }
         })
-        this.endPoint = new DragPoint(endPoint.x, endPoint.y, 5, "green", AutoZindex.getIndex())
+        this.endPoint = new DragPoint({
+            x: endPoint.x,
+            y: endPoint.y,
+            r: 5,
+            color: "green"
+        })
         this.endPoint.addEvent("click", (t) => {
             this.endBindTarget = null
         })

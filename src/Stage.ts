@@ -13,11 +13,11 @@ class Stage {
     children: any[];
     static DragElement: string[];
     flatElements: any[];
-    constructor(canvas, w, h) {
+    constructor(canvas) {
         // 初始化canvas
         this.canvas = typeof canvas == "string" ? document.getElementById(canvas) : canvas;
-        this.canvas.width = w;
-        this.canvas.height = h;
+        this.canvas.width = this.canvas.clientWidth;
+        this.canvas.height = this.canvas.clientHeight;
         this.ctx = this.canvas.getContext("2d");
 
         this.children = [];

@@ -1,20 +1,30 @@
 import BasicElement from "./BasicElement";
 
+interface CircleOption {
+    x: number,
+    y: number,
+    offsetX: number,
+    offsetY: number,
+    r: number,
+    color?: string,
+    zindex?: number
+}
+
 // 圆
 class Circle extends BasicElement {
     r: number;
-    c: string;
     type: string;
-    constructor(offsetX, offsetY, r, c, zindex) {
-        super(offsetX, offsetY, zindex);
-        this.r = r;
-        this.c = c;
+    color: string;
+    constructor(option: CircleOption) {
+        super(option);
+        this.r = option.r;
+        this.color = option.color || "#000";
         this.type = "cirlce";
     }
     draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.c;
+        ctx.fillStyle = this.color;
         ctx.fill();
         ctx.closePath();
     }

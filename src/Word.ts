@@ -1,18 +1,31 @@
 import BasicElement from "./BasicElement";
 
+interface WordOption {
+    x?: number,
+    y?: number,
+    offsetX: number,
+    offsetY: number,
+    text: string,
+    color?: string,
+    font?: string
+    zindex?: number
+}
+
 // 文本
 class Word extends BasicElement {
     text: string;
-    c: string;
-    constructor(text, offsetX, offsetY, c, zindex?) {
-        super(offsetX, offsetY, zindex);
-        this.text = text;
-        this.c = c;
+    color: string;
+    font: string;
+    constructor(option: WordOption) {
+        super(option);
+        this.text = option.text;
+        this.color = option.color || "#000";
+        this.font = option.font || "24px STheiti, SimHei"
     }
 
     draw(ctx) {
-        ctx.fillStyle = "#000";
-        ctx.font = "24px STheiti, SimHei";
+        ctx.fillStyle = this.color;
+        ctx.font = this.font;
         ctx.fillText(this.text, this.x, this.y);
     }
 }

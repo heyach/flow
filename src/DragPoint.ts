@@ -1,20 +1,31 @@
 // 拖拽点
+
+import AutoZindex from "./AutoZindex";
+
+interface DragPointOption {
+    x: number;
+    y: number;
+    r: number;
+    color?: string;
+    zindex?: number
+}
+
 class DragPoint {
     x: number;
     y: number;
     r: number;
-    c: string;
+    color: string;
     type: string;
     zindex: any;
     active: any;
     event: {};
     parent: any;
-    constructor(x, y, r, c, zindex) {
-        this.x = x;
-        this.y = y;
-        this.r = r;
-        this.c = c;
-        this.zindex = zindex
+    constructor(option: DragPointOption) {
+        this.x = option.x;
+        this.y = option.y;
+        this.r = option.r;
+        this.color = option.color || "blue";
+        this.zindex = option.zindex || AutoZindex.getHindex()
         this.type = "dragpoint";
         this.active = false
         this.event = {};
@@ -23,7 +34,7 @@ class DragPoint {
     draw(ctx) {
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-        ctx.fillStyle = this.c;
+        ctx.fillStyle = this.color;
         ctx.fill();
         ctx.closePath();
     }
