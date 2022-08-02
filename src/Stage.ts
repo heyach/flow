@@ -52,9 +52,10 @@ class Stage {
                 this.clearChildrenActive();
                 this.isDrag = false;
                 // this.target = null
-            } 
+            } else {
+                this.target = null
+            }
             this.target && this.target.dispatchEvent && this.target.dispatchEvent("mouseup");
-            this.target = null
             this.canvas.removeEventListener("mousemove", this.targetMove, false);
         });
     }

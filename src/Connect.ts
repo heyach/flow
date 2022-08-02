@@ -3,6 +3,7 @@
 // 线的层级最低，拖拽点的层级最高
 
 import AutoZindex from "./AutoZindex"
+import Container from "./Container"
 import DragPoint from "./DragPoint"
 import flatArrayChildren from "./flatArrayChildren"
 import getArrowControlPoint from "./getArrowControlPoint"
@@ -44,12 +45,12 @@ class Connect {
             this.active = true
         });
         this.startPoint.addEvent("mouseup", (t) => {
-            console.log(t)
             // 拖拽结束后，判断落点是否有元素，如果有，以元素的xy为准，同时记录元素，元素在更新位置的时候，也会更新线段
             let target = this.getMouseUpTarget(t.x, t.y)
-            if(target) {
+            // 更新 container已经虚化了，落点必定是container里的元素，所以绑定点为落点元素的parent
+            if(target.parent) {
                 // 箭头落点坐标计算方式要优化，不能直接用元素的顶点，要判断边，更接近哪条边就用哪条边
-                this.startBindTarget = target[pointNearEdge(t, target)]
+                this.startBindTarget = target.parent[pointNearEdge(t, target)]
             }
         })
         this.endPoint = new DragPoint({
@@ -68,8 +69,8 @@ class Connect {
             // 拖拽结束后，判断落点是否有元素，如果有，以元素的xy为准，同时记录元素，元素在更新位置的时候，也会更新线段
             // 更新，以最合适的一条边为连线点
             let target = this.getMouseUpTarget(t.x, t.y)
-            if(target) {
-                this.endBindTarget = target[pointNearEdge(t, target)]
+            if(target.parent) {
+                this.endBindTarget = target.parent[pointNearEdge(t, target)]
             }
         })
         

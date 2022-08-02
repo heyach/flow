@@ -1,5 +1,6 @@
 import Container from "./Container";
 import Icon from "./Icon";
+import Rect from "./Rect";
 import Stage from "./Stage";
 import Word from "./Word";
 
@@ -15,36 +16,34 @@ interface TextElmOption {
 
 // 一个基础组件，由一个外框，一行文本和一个删除icon
 class TextElm {
-    text: string;
-    x: number;
-    y: number;
-    h: number;
-    w: number;
     word: Word;
     icon: Icon;
     container: Container;
-    color: string;
-    parent: Stage;
+    bg: Rect;
     constructor(option: TextElmOption) {
-        this.text = option.text;
-        this.x = option.x;
-        this.y = option.y;
-        this.w = option.w;
-        this.h = option.h;
-        this.color = option.color;
-        this.container = null;
-        this.icon = null;
-        this.word = null;
-        this.parent = option.parent
+        this.container = new Container({
+            x: option.x,
+            y: option.y,
+            w: option.w,
+            h: option.h
+        });
+        this.container.type = "TextElm"
 
-        this.init();
-        return <any>this.container
-    }
+        this.bg = new Rect({
+            x: 0,
+            y: 0,
+            w: option.w,
+            h: option.h,
+            offsetX: 0,
+            offsetY: 0,
+            color: "pink"
+        })
+        this.bg.addEvent("click", (t) => {
+            this.container.setActive(true);
+        });
 
-    init() {
-        this.container = new Container(this.x, this.y, this.w, this.h, this.color);
         this.icon = new Icon({
-            offsetX: this.w - 20,
+            offsetX: option.w - 20,
             offsetY: 0,
             w: 20,
             h: 20,
@@ -52,18 +51,23 @@ class TextElm {
         }); // icon固定在容器右上角
 
         this.icon.addEvent("click", (t) => {
-            this.parent.remove(this.container);
+            this.container.destory();
         });
 
         this.word = new Word({
-            text: this.text,
+            text: option.text,
             offsetX: 0,
-            offsetY: this.h / 2,
+            offsetY: option.h / 2,
             color: "blue"
         }); // 文本垂直居中
+
+        this.container.add(this.bg)
         this.container.add(this.icon);
         this.container.add(this.word);
+
+        return <any>this.container
     }
+
 }
 
 export default TextElm

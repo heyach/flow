@@ -5,7 +5,6 @@ import TextElm from "./TextElm";
 
 // 初始化一个800 * 700的舞台
 let s2 = new Stage(document.getElementById("stage"));
-console.log(s2)
 
 // 在 (50, 50)的位置初始化一个200 * 50的文字板
 let t1 = new TextElm({
