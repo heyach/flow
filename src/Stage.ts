@@ -1,4 +1,5 @@
 import flatArrayChildren from "./flatArrayChildren";
+import Timer from "./Timer";
 
 // 舞台类
 class Stage {
@@ -13,6 +14,26 @@ class Stage {
     children: any[];
     static DragElement: string[];
     flatElements: any[];
+    static animate(elm, option, t) {
+        // 记录元素的初始位置
+        var x0 = elm.x
+        var y0 = elm.y
+        // 拿到最终的xy
+        // 计算出dx和dy，默认100次分解
+        let dx = option.x ? (option.x - x0) / 100 : 0
+        let dy = option.y ? (option.y - y0) / 100 : 0
+        // 计算出每次更新的时间间隔
+        let dt = t / 100
+    
+        let timer = new Timer(() => {
+            if(elm.x == option.x || elm.y == option.y) {
+                timer.clear()
+            } else {
+                elm.x += dx
+                elm.y += dy
+            }
+        }, dt)
+    }
     constructor(canvas) {
         // 初始化canvas
         this.canvas = typeof canvas == "string" ? document.getElementById(canvas) : canvas;
