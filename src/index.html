@@ -17,9 +17,26 @@
             top: 100px;
             left: 100px;
         }
+        .person-run {
+            position: absolute;
+            width: 92px;
+            height: 163px;
+            background-image: url("./run.png");
+            animation: run 1s steps(8) infinite;
+            border: 1px red solid;
+        }
+        @keyframes run {
+            from {
+              background-position: 0 0;
+            }
+            to {
+              background-position: -736px 0;
+            }
+        }
     </style>
   </head>
   <body>
+    <div class="person-run"></div>
     <canvas id="stage"></canvas>
   </body>
 </html>

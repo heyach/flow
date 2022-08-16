@@ -1,5 +1,7 @@
 import Connect from "./Connect";
 import PathLine from "./PathLine";
+import Person from "./Person";
+import PersonElm from "./PersonElm";
 import Stage from "./Stage";
 import TextElm from "./TextElm";
 
@@ -55,3 +57,16 @@ let t3 = new TextElm({
     parent: s2
 });
 s2.add(t3);
+
+let p = new PersonElm({
+    x: 50,
+    y: 50,
+    w: 92,
+    h: 163,
+    src: "./run.png"
+})
+s2.add(p.container)
+// p.move()
+// setTimeout(() => {
+//     p.stop()
+// },2000)

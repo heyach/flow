@@ -47,7 +47,7 @@ class TextElm {
             offsetY: 0,
             w: 20,
             h: 20,
-            src: "./close.png"
+            src: "https://s1.chu0.com/src/img/png/96/9646d5fdea504567ad42aa84ab55500b.png"
         }); // icon固定在容器右上角
 
         this.icon.addEvent("click", (t) => {
