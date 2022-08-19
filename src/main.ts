@@ -1,3 +1,4 @@
+import Background from "./Background";
 import Connect from "./Connect";
 import PathLine from "./PathLine";
 import Person from "./Person";
@@ -7,6 +8,11 @@ import TextElm from "./TextElm";
 
 // 初始化一个800 * 700的舞台
 let s2 = new Stage(document.getElementById("stage"));
+
+let bg = new Background()
+bg.animate()
+s2.add(bg)
+
 
 // 在 (50, 50)的位置初始化一个200 * 50的文字板
 let t1 = new TextElm({
@@ -18,7 +24,7 @@ let t1 = new TextElm({
     color: "blue",
     parent: s2
 });
-s2.add(t1);
+// s2.add(t1);
 // Stage.animate(t1, {
 //     x: 300,
 //     y: 300
