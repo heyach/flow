@@ -20,13 +20,13 @@ class Word extends BasicElement {
         super(option);
         this.text = option.text;
         this.color = option.color || "#000";
-        this.font = option.font || "24px STheiti, SimHei"
+        this.font = option.font || "14px cursive"
     }
 
     draw(ctx) {
         ctx.fillStyle = this.color;
         ctx.font = this.font;
-        ctx.fillText(this.text, this.x, this.y);
+        ctx.fillText(this.text, this.x, this.y, 200);
     }
 }
 

@@ -11,13 +11,13 @@
         }
         #stage {
             position: absolute;
-            width: 300px;
-            height: 500px;
+            width: 800px;
+            height: 700px;
             border: 1px red solid;
             top: 100px;
             left: 100px;
         }
-        .person-run {
+        /* .person-run {
             position: absolute;
             width: 92px;
             height: 163px;
@@ -32,11 +32,41 @@
             to {
               background-position: -736px 0;
             }
+        } */
+        .render-dom {
+            position: absolute;
+            width: 200px;
+            height: 60px;
+            background: pink;
+            left: 10px;
+            top: 10px;
+        }
+        .render-dom p {
+            font-size: 14px;
+            color: blue;
+            line-height: 14px;
+            font-family: cursive;
+        }
+        .render-dom .icon {
+            width: 20px;
+            height: 20px; 
+        }
+        .render-dom .btn {
+            color: #fff;
+            border: 0;
+            font-size: 14px;
+            font-family: cursive;
+            background: green;
         }
     </style>
   </head>
   <body>
     <!-- <div class="person-run"></div> -->
     <canvas id="stage"></canvas>
+    <div class="render-dom" id="rdom">
+        <p>我是一行文本，有点长</p>
+        <img src="./close.png" class="icon"/>
+        <button class="btn">确认按钮</button>
+    </div>
   </body>
 </html>
