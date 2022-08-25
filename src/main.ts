@@ -1,7 +1,9 @@
 import Background from "./Background";
+import Bullet from "./Bullet";
 import Connect from "./Connect";
 import Container from "./Container";
 import getAxes from "./getAxes";
+import getElementPoints from "./getElementPoints";
 import getProjection from "./getProjection";
 import Icon from "./Icon";
 import isCollision from "./isCollision";
@@ -143,34 +145,12 @@ let t2 = new TextElm({
 });
 
 s2.add(t2);
-function getPoints(obj) {
-    let t = []
-    t.push({
-        x: obj.x,
-        y: obj.y
-    })
-    t.push({
-        x: obj.x + obj.w,
-        y: obj.y
-    })
-    t.push({
-        x: obj.x + obj.w,
-        y: obj.y + obj.h
-    })
-    t.push({
-        x: obj.x,
-        y: obj.y + obj.h
-    })
-    return {
-        points: t
-    }
-}
 let t5 = new TextElm({
     text: "world 哈哈2",
-    x: 0,
-    y: 0,
-    w: 800,
-    h: 20,
+    x: 440,
+    y: 40,
+    w: 200,
+    h: 50,
     color: "blue",
     parent: s2
 });
@@ -179,8 +159,36 @@ const _window = window as any
 _window.check = function() {
     // points的顺序有要求的，因为是依次连线绘制的，好歹要保证是多边形
     // 我们在屏幕四周构建四个矩形，就可以判断是否触边了
-    console.log(isCollision(getPoints(t5), getPoints(t2)))
+    console.log(isCollision(getElementPoints(t5), getElementPoints(t2)))
 }
+
+let b = new Bullet({
+    x: 10,
+    y: 0,
+    ex: 300,
+    ey: 610,
+    w: 20,
+    h: 20,
+})
+s2.add(b)
+let b2 = new Bullet({
+    x: 300,
+    y: 0,
+    ex: 300,
+    ey: 610,
+    w: 20,
+    h: 20,
+})
+s2.add(b2)
+let b3 = new Bullet({
+    x: 600,
+    y: 0,
+    ex: 300,
+    ey: 610,
+    w: 20,
+    h: 20,
+})
+s2.add(b3)
 
 // 把t1和t2这两个板子用**自动连接，这个连线方式要优化**方式连接起来，拖拽之后自动更新连线方式
 // let p = new PathLine(t1, t2, "red");
